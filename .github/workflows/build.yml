@@ -172,7 +172,10 @@ jobs:
     needs: [ app-android-build, app-ios-build ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@main
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ env.target_owner }}/${{ env.target_repository }}
+        ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
     - name:
       id: tag
       run: |
