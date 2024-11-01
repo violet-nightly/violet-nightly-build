@@ -199,7 +199,7 @@ jobs:
         body: |
           Changes on this release
         draft: false
-        prerelease: true
+        prerelease: false
     - name: Upload Release Asset
       uses: actions/upload-release-asset@main
       env:
