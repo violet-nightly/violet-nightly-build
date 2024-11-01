@@ -168,8 +168,73 @@ jobs:
         with:
           name: apk-build
           path: ./violet/build/app/outputs/apk/release/app-release.apk
+  app-windows-build:
+    runs-on: windows-latest
+    needs: [app-format, app-changes]
+    if: ${{ needs.app-changes.outputs.src == 'true' }}
+    defaults:
+      run:
+        working-directory: violet
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ env.target_owner }}/${{ env.target_repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "17.x"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: 3.24.2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Preprocess
+        shell: powershell
+        run: |
+          cd lib/server
+          $secretSaltUrl = "${{ secrets.SECRET_SALT }}"
+          $secretWSaltUrl = "${{ secrets.SECRET_WSALT }}"
+
+          # Try downloading SECRET_SALT
+          try {
+            Invoke-WebRequest -Uri $secretSaltUrl -UseBasicParsing -OutFile "salt.dart"
+          } catch {
+            "String getValid(String vToken) { return vToken; }" | Out-File -Encoding "UTF8" -FilePath "salt.dart"
+          }
+
+          # Try downloading SECRET_WSALT
+          try {
+            Invoke-WebRequest -Uri $secretWSaltUrl -UseBasicParsing -OutFile "wsalt.dart"
+          } catch {
+            "String getValid(String vToken) { return vToken; }" | Out-File -Encoding "UTF8" -FilePath "wsalt.dart"
+          }
+          cd ../..
+
+      - name: Build
+        run: |
+          flutter clean
+          flutter build windows --release
+      - name: Archive
+        shell: powershell
+        run: |
+          Compress-Archive -Path ./build/windows/x64/runner/Release/ -DestinationPath ./Windows.zip
+          ls
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: ./violet/Windows.zip
   release:
-    needs: [ app-android-build, app-ios-build ]
+    needs: [ app-android-build, app-ios-build, app-windows-build ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -187,6 +252,10 @@ jobs:
     - uses: actions/download-artifact@main
       with:
         name: apk-build
+        path: .
+    - uses: actions/download-artifact@main
+      with:
+        name: windows-build
         path: .
     - name: Create Release
       id: create_release
@@ -218,3 +287,13 @@ jobs:
         asset_path: ./app-release.apk
         asset_name: app-release.apk
         asset_content_type: application/vnd.android.package-archive
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./Windows.zip
+        asset_name: Windows.zip
+        asset_content_type: application/zip
+        
