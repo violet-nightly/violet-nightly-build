@@ -96,7 +96,6 @@ jobs:
           wget -q ${{ secrets.SECRET_SALT }} || echo 'String getValid(String vToken) { return vToken; }' > salt.dart
           wget -q ${{ secrets.SECRET_WSALT }} || echo 'String getValid(String vToken) { return vToken; }' > wsalt.dart
           cd ../..
-          python3 preprocess-ios.py
 
       - name: Podfile
         run: |
@@ -156,7 +155,6 @@ jobs:
           wget -q ${{ secrets.SECRET_SALT }} || echo 'String getValid(String vToken) { return vToken; }' > salt.dart
           wget -q ${{ secrets.SECRET_WSALT }} || echo 'String getValid(String vToken) { return vToken; }' > wsalt.dart
           cd ../..
-          python3 preprocess-android.py
 
       - name: Build
         run: |
