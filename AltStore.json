@@ -30,7 +30,7 @@
       "caption": "Open Source Hentai Viewer App",
       "tintColor": "289979",
       "appID": "xyz.project.violet",
-      "date": "$(date "+%Y-%m-%d")",
+      "date": "2025-02-04",
       "notify": false
     }
   ]
