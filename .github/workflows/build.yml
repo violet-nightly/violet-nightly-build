@@ -280,7 +280,7 @@ jobs:
         echo '      "title": "violet now available!",' >> AltStore.json
         echo '      "identifier": "violet-now-available",' >> AltStore.json
         echo '      "caption": "Open Source Hentai Viewer App",' >> AltStore.json
-        echo '      "tintColor": "289979",' >> AltStore.json' >> AltStore.json
+        echo '      "tintColor": "289979",' >> AltStore.json
         echo '      "appID": "xyz.project.violet",' >> AltStore.json
         echo '      "date": "$(date "+%Y-%m-%d")",' >> AltStore.json
         echo '      "notify": false' >> AltStore.json
