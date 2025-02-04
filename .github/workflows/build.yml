@@ -239,10 +239,65 @@ jobs:
       with:
         repository: ${{ env.target_owner }}/${{ env.target_repository }}
         ref: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
+        path: violet
     - name:
       id: tag
       run: |
+        cd violet
         echo "value=$(git rev-parse --abbrev-ref HEAD)-$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        cd ..
+    - uses: actions/checkout@v2
+      with:
+        path: violet-dev-build
+    - shell: bash
+      run: |
+        cd violet-dev-build
+        cat <<'EOF' > AltStore.json << EOF
+        {
+          "name": "violet",
+          "identifier": "xyz.project.violet",
+          "sourceURL": "https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/dev/AltStore.json",
+          "apps": [
+            {
+              "name": "violet",
+              "bundleIdentifier": "xyz.project.violet",
+              "developerName": "Project Violet",
+              "version": "1.32.2",
+              "versionDate": "$(date "+%Y-%m-%dT%H:%M:%S")",
+              "versionDescription": "version: update version (${{ steps.tag.outputs.value }})",
+              "downloadURL": "https://github.com/project-violet/violet/releases/download/${{ steps.tag.outputs.value }}/Payload.ipa",
+              "localizedDescription": "An unofficial E-Hentai App for iOS.",
+              "iconURL": "https://raw.githubusercontent.com/project-violet/violet/dev/violet/assets/images/logo.png",
+              "tintColor": "289979",
+              "size": 44488639,
+              "permissions": [
+                {
+                  "type": "network",
+                  "usageDescription": "Needs this permission to access the Internet"
+                }
+              ]
+            }
+          ],
+          "news": [
+            {
+              "title": "violet now available!",
+              "identifier": "violet-now-available",
+              "caption": "Open Source Hentai Viewer App",
+              "tintColor": "289979",
+              "appID": "xyz.project.violet",
+              "date": "$(date "+%Y-%m-%d")",
+              "notify": false
+            }
+          ]
+        }
+        EOF
+    - uses: corcc/publish@node
+      with:
+        TZ: 'Asia/Seoul'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        TASK_NAME: Update AltStore.json
+    - run: cd ..
+
     - uses: actions/download-artifact@main
       with:
         name: ipa-build
