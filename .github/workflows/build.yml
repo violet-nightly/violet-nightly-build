@@ -250,45 +250,43 @@ jobs:
     - uses: actions/checkout@v2
     - shell: bash
       run: |
-        cat <<'EOF' > AltStore.json << EOF
-        {
-          "name": "violet",
-          "identifier": "xyz.project.violet",
-          "sourceURL": "https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/main/AltStore.json",
-          "apps": [
-            {
-              "name": "violet",
-              "bundleIdentifier": "xyz.project.violet",
-              "developerName": "Project Violet",
-              "version": "1.32.2",
-              "versionDate": "$(date "+%Y-%m-%dT%H:%M:%S")",
-              "versionDescription": "version: update version (${{ steps.tag.outputs.value }})",
-              "downloadURL": "https://github.com/violet-dev-build/violet-dev-build/releases/download/${{ steps.tag.outputs.value }}/Payload.ipa",
-              "localizedDescription": "An unofficial E-Hentai App for iOS.",
-              "iconURL": "https://raw.githubusercontent.com/project-violet/violet/dev/violet/assets/images/logo.png",
-              "tintColor": "289979",
-              "size": 44488639,
-              "permissions": [
-                {
-                  "type": "network",
-                  "usageDescription": "Needs this permission to access the Internet"
-                }
-              ]
-            }
-          ],
-          "news": [
-            {
-              "title": "violet now available!",
-              "identifier": "violet-now-available",
-              "caption": "Open Source Hentai Viewer App",
-              "tintColor": "289979",
-              "appID": "xyz.project.violet",
-              "date": "$(date "+%Y-%m-%d")",
-              "notify": false
-            }
-          ]
-        }
-        EOF
+        echo '{' > AltStore.json
+        echo '  "name": "violet",' >> AltStore.json
+        echo '  "identifier": "xyz.project.violet",' >> AltStore.json
+        echo '  "sourceURL": "https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/refs/heads/main/AltStore.json",' >> AltStore.json
+        echo '  "apps": [' >> AltStore.json
+        echo '    {' >> AltStore.json
+        echo '      "name": "violet",' >> AltStore.json
+        echo '      "bundleIdentifier": "xyz.project.violet",' >> AltStore.json
+        echo '      "developerName": "Project Violet",' >> AltStore.json
+        echo '      "version": "${{ steps.tag.outputs }}",' >> AltStore.json
+        echo "      \"versionDate\": \"$(date "+%Y-%m-%dT%H:%M:%S")\"," >> AltStore.json
+        echo '      "versionDescription": "version: update version (${{ steps.tag.outputs.value }})",' >> AltStore.json
+        echo '      "downloadURL": "https://github.com/violet-dev-build/violet-dev-build/releases/download/${{ steps.tag.outputs.value }}/Payload.ipa",' >> AltStore.json
+        echo '      "localizedDescription": "An unofficial E-Hentai App for iOS.",' >> AltStore.json
+        echo '      "iconURL": "https://raw.githubusercontent.com/project-violet/violet/dev/violet/assets/images/logo.png",' >> AltStore.json
+        echo '      "tintColor": "289979",' >> AltStore.json
+        echo '      "size": 44488639,' >> AltStore.json
+        echo '      "permissions": [' >> AltStore.json
+        echo '        {' >> AltStore.json
+        echo '          "type": "network",' >> AltStore.json
+        echo '          "usageDescription": "Needs this permission to access the Internet"' >> AltStore.json
+        echo '        }' >> AltStore.json
+        echo '      ]' >> AltStore.json
+        echo '    }' >> AltStore.json
+        echo '  ],' >> AltStore.json
+        echo '  "news": [' >> AltStore.json
+        echo '    {' >> AltStore.json
+        echo '      "title": "violet now available!",' >> AltStore.json
+        echo '      "identifier": "violet-now-available",' >> AltStore.json
+        echo '      "caption": "Open Source Hentai Viewer App",' >> AltStore.json
+        echo '      "tintColor": "289979",' >> AltStore.json' >> AltStore.json
+        echo '      "appID": "xyz.project.violet",' >> AltStore.json
+        echo '      "date": "$(date "+%Y-%m-%d")",' >> AltStore.json
+        echo '      "notify": false' >> AltStore.json
+        echo '    }' >> AltStore.json
+        echo '  ]' >> AltStore.json
+        echo '}' >> AltStore.json
     - uses: corcc/publish@node
       with:
         TZ: 'Asia/Seoul'
