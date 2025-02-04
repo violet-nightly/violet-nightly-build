@@ -1,1 +1,1 @@
-![](altstore://source/?url=https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/main/AltStore.json)
+[iOS](altstore://source/?url=https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/main/AltStore.json)
