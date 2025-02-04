@@ -246,17 +246,15 @@ jobs:
         cd violet
         echo "value=$(git rev-parse --abbrev-ref HEAD)-$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         cd ..
+        rm -rf violet
     - uses: actions/checkout@v2
-      with:
-        path: violet-dev-build
     - shell: bash
       run: |
-        cd violet-dev-build
         cat <<'EOF' > AltStore.json << EOF
         {
           "name": "violet",
           "identifier": "xyz.project.violet",
-          "sourceURL": "https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/dev/AltStore.json",
+          "sourceURL": "https://raw.githubusercontent.com/violet-dev-build/violet-dev-build/main/AltStore.json",
           "apps": [
             {
               "name": "violet",
@@ -265,7 +263,7 @@ jobs:
               "version": "1.32.2",
               "versionDate": "$(date "+%Y-%m-%dT%H:%M:%S")",
               "versionDescription": "version: update version (${{ steps.tag.outputs.value }})",
-              "downloadURL": "https://github.com/project-violet/violet/releases/download/${{ steps.tag.outputs.value }}/Payload.ipa",
+              "downloadURL": "https://github.com/violet-dev-build/violet-dev-build/releases/download/${{ steps.tag.outputs.value }}/Payload.ipa",
               "localizedDescription": "An unofficial E-Hentai App for iOS.",
               "iconURL": "https://raw.githubusercontent.com/project-violet/violet/dev/violet/assets/images/logo.png",
               "tintColor": "289979",
